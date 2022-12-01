@@ -16,6 +16,6 @@ def getVehicleData():
 
 
 # Fetch People Data
-# getPeopleData()
+getPeopleData()
 # Fetch Vehicle Data
 getVehicleData()
