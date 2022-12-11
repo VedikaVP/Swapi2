@@ -1,10 +1,10 @@
 from Service.MainService import Service
 from Resources.ResourceBase import Base
-
+from Model.FilmModel import FilmModel, FilmsModel
 
 class Films(Base):
     # Variables
-    __response = []
+    __filmsModel = FilmsModel()
     __page: int = 1
     __serviceObj = Service()
 
@@ -26,20 +26,19 @@ class Films(Base):
         res = self.__serviceObj.get_response(self.__get_complete_url(), params)
         results_data = res.get("results", [])
         count = res.get("count", 0)
-        self.__response.extend(results_data)
-        if len(self.__response) < int(count):
+        self.__filmsModel.extend_films(results_data)
+        if len(self.__filmsModel.films) < int(count):
             self.__page += 1
             self.fetch()
 
     def get_names(self):
-        if len(self.__response) > 0:
-            film_names = list(map(lambda x: x.get("title"), self.__response))
-            print(film_names)
+        if len(self.__filmsModel.films) > 0:
+            print(self.__filmsModel.get_titles())
         else:
             print("No film name data found")
 
     def get_count(self):
-        if len(self.__response) > 0:
-            print("{0} data found".format(len(self.__response)))
+        if len(self.__filmsModel.films) > 0:
+            print("{0} data found".format(len(self.__filmsModel.films)))
         else:
-            print("No film {0} data found".format(len(self.__response)))
+            print("No film {0} data found".format(len(self.__filmsModel.films)))

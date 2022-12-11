@@ -1,10 +1,10 @@
 from Service.MainService import Service
 from Resources.ResourceBase import Base
-
+from Model.PeopleModel import PeopleModel, PeoplesModel
 
 class People(Base):
     # Variables
-    __response = []
+    __peoplesModel = PeoplesModel()
     __page: int = 1
     __serviceObj = Service()
 
@@ -25,21 +25,20 @@ class People(Base):
         params = {"page": self.__page}
         res = self.__serviceObj.get_response(self.__get_complete_url(), params)
         results_data = res.get("results", [])
+        self.__peoplesModel.extend_films(results_data)
         count = res.get("count", 0)
-        self.__response.extend(results_data)
-        if len(self.__response) < int(count):
+        if len(self.__peoplesModel.peoples) < int(count):
             self.__page += 1
             self.fetch()
 
     def get_names(self):
-        if len(self.__response) > 0:
-            names = list(map(lambda x: x.get("name"), self.__response))
-            print(names)
+        if len(self.__peoplesModel.peoples) > 0:
+            print(self.__peoplesModel.get_names())
         else:
             print("No people name data found")
 
     def get_count(self):
-        if len(self.__response) > 0:
-            print("{0} data found".format(len(self.__response)))
+        if len(self.__peoplesModel.peoples) > 0:
+            print("{0} data found".format(len(self.__peoplesModel.peoples)))
         else:
-            print("No people {0} data found".format(len(self.__response)))
+            print("No people {0} data found".format(len(self.__peoplesModel.peoples)))
